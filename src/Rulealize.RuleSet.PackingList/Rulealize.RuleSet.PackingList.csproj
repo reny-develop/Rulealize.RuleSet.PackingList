@@ -19,7 +19,7 @@
       declares. The fetch goes by this one and every `uses` constraint is answered by that
       one, so a release where they differ downloads perfectly and satisfies nothing.
     -->
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
 
     <Authors>Reny</Authors>
     <Description>What to take, and what is in the bag already: items added as they come to mind and ticked as they are packed. A Rulealize rule set.</Description>

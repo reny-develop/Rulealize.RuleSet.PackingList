@@ -1,7 +1,7 @@
 {
   "$schema": "rulealize/ruleset/v1",
   "id": "Rulealize.RuleSet.PackingList",
-  "version": "1.0.0",
+  "version": "1.1.0",
 
   // What to take, and what is in the bag already. Items are added as they come to mind and
   // ticked as they are packed; the list is the link, so bookmarking it keeps it for next time.
@@ -15,6 +15,7 @@
     { "plugin": "Rulealize.Plugin.Comparison", "version": "^1.0" },
     { "plugin": "Rulealize.Plugin.Logic", "version": "^1.0" },
     { "plugin": "Rulealize.Plugin.Binding", "version": "^1.0" },
+    { "plugin": "Rulealize.Plugin.Branch", "version": "^1.0" },
     { "plugin": "Rulealize.Plugin.Definition", "version": "^1.0" }
   ],
 
@@ -77,9 +78,23 @@
   "projections": {
     "left": "#left",
     "packed": "$packed",
+    // Every item in the order it was listed, and whether it is in the bag: one line each, for a
+    // screen that packs and unpacks it where it stands. (Added in 1.1.)
+    "list": {
+      "op": "seq.select", "source": "$items", "as": "i",
+      "select": {
+        "item": "@i",
+        "state": {
+          "op": "branch.if",
+          "cond": { "op": "seq.any", "source": "$packed", "as": "p", "predicate": { "op": "cmp.eq", "left": "@p", "right": "@i" } },
+          "then": "packed", "else": "left"
+        }
+      }
+    },
     "counts": {
       "left": { "op": "seq.count", "source": "#left" },
-      "packed": { "op": "seq.count", "source": "$packed" }
+      "packed": { "op": "seq.count", "source": "$packed" },
+      "all": { "op": "seq.count", "source": "$items" }
     }
   }
 }
